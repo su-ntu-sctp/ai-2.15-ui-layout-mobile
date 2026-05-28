@@ -3,8 +3,8 @@
 ## Overview
 
 - **Lesson:** UI Composition and Layout Management in Mobile Applications / 2.15
-- **Format:** 30 questions (MCQ and True/False)
-- **Time:** ~30 minutes
+- **Format:** 10 questions (MCQ and True/False)
+- **Time:** ~10–15 minutes
 - **Scoring:** 1 point each
 
 ## Questions
@@ -25,87 +25,75 @@ D - `Section`
 
 ### Q2
 
-Which React Native component must be used to display any text on screen?
+A learner wants to display a network image from a URL. Which of the following is the correct way to set the `source` prop?
 
-A - `Label`
+A - `source={imageUrl}`
 
-B - `Paragraph`
+B - `source={{ href: imageUrl }}`
 
-C - `Span`
+C - `source={{ uri: imageUrl }}`
 
-D - `Text`
+D - `source={<img src={imageUrl} />}`
 
 ---
 
-### Q3 (True/False)
+### Q3
 
-In React Native, you can use heading tags such as `<h1>` and `<h2>` to create visual hierarchy in your layout.
+A learner adds a network `Image` component with a valid `source` prop but no explicit `width` or `height` style. What will happen?
 
-A - True
+A - React Native fetches the image and renders it at its natural dimensions
 
-B - False
+B - The image is invisible because React Native cannot determine its size before fetching
+
+C - React Native throws a build error requiring a `size` prop
+
+D - The image stretches to fill the screen automatically
 
 ---
 
 ### Q4
 
-A learner writes the following code. What will happen when the app runs?
+Which of the following correctly describes how `TextInput` works in React Native?
 
-```jsx
-<View>
-  Welcome to React Native
-</View>
-```
+A - It manages its own value internally like an HTML `<input>` and does not need state
 
-A - The text is displayed as plain, unstyled text
+B - It is a controlled component: the value is stored in state and updated via `onChangeText`
 
-B - React Native throws an error because bare strings cannot be rendered inside `View`
+C - It requires a `ref` to read its value; there is no `value` prop
 
-C - React Native silently ignores the string and renders an empty `View`
-
-D - React Native wraps the string in a `Text` component automatically
+D - It only supports single-line text; multi-line input requires a separate `TextArea` component
 
 ---
 
 ### Q5
 
-Which of the following is the correct way to set a background colour in React Native?
+What is the purpose of wrapping your screen in `SafeAreaView` from `react-native-safe-area-context`?
 
-A - `style="background-color: #fff;"`
+A - It prevents the app from rotating to landscape mode
 
-B - `style={{ 'background-color': '#fff' }}`
+B - It automatically adds padding so content is not hidden behind the device notch or status bar
 
-C - `className="bg-white"`
+C - It wraps the component tree in an error boundary so crashes are handled gracefully
 
-D - `style={{ backgroundColor: '#fff' }}`
+D - It enables hardware-accelerated rendering on devices that support it
 
 ---
 
-### Q6 (True/False)
+### Q6
 
-In React Native, numeric style values such as `fontSize: 16` are interpreted as density-independent pixels by default.
+A learner places `KeyboardAvoidingView` inside `ScrollView`. The keyboard still covers the text input on iOS. What is the likely cause?
 
-A - True
+A - `KeyboardAvoidingView` is not supported on iOS; use `KeyboardAwareScrollView` instead
 
-B - False
+B - The `behavior` prop is missing
+
+C - `ScrollView` must be nested inside `KeyboardAvoidingView`, not the other way around
+
+D - `SafeAreaView` must be removed before `KeyboardAvoidingView` will work
 
 ---
 
 ### Q7
-
-Which of the following style definitions is valid in React Native?
-
-A - `{ fontSize: '16px', fontWeight: 'bold' }`
-
-B - `{ font-size: 16, font-weight: '700' }`
-
-C - `{ fontSize: 16, fontWeight: '700' }`
-
-D - `{ fontSize: '16', fontWeight: bold }`
-
----
-
-### Q8
 
 What is the primary advantage of using `StyleSheet.create()` over plain JavaScript style objects?
 
@@ -119,302 +107,38 @@ D - It enables hot reload for style changes
 
 ---
 
-### Q9 (True/False)
+### Q8 (True/False)
 
-The CSS shorthand `border: '1px solid #ccc'` works in React Native the same way it does in a browser.
+In React Native, the default value of `flexDirection` on a `View` is `"column"`, which is the opposite of the CSS Flexbox default.
 
 A - True
 
 B - False
+
+---
+
+### Q9
+
+A container has `flexDirection: "row"`. Which property controls how child items are spaced along the horizontal axis, and which controls their alignment on the vertical axis?
+
+A - `alignItems` controls horizontal spacing; `justifyContent` controls vertical alignment
+
+B - `justifyContent` controls horizontal spacing; `alignItems` controls vertical alignment
+
+C - Both `justifyContent` and `alignItems` operate on the horizontal axis when `flexDirection` is `"row"`
+
+D - `flexGrow` controls horizontal spacing; `alignSelf` controls vertical alignment
 
 ---
 
 ### Q10
 
-A learner wants to draw a bottom border under a `Text` component. Which style properties should they use?
+A screen has three child `View` components inside a root container with `flex: 1`. The first child has `flex: 2` and the other two each have `flex: 1`. What fraction of the screen height does the first child occupy?
 
-A - `borderBottom: '1px solid #000'`
+A - One-third
 
-B - `borderStyle: 'solid', borderBottomColor: '#000'`
+B - One-half
 
-C - `borderBottomWidth: 1, borderBottomColor: '#000'`
+C - Two-thirds
 
-D - `outline: '1px solid #000'`
-
----
-
-### Q11
-
-How does the `Image` component load a local image file in React Native?
-
-A - `<Image src="./assets/photo.png" />`
-
-B - `<Image source="./assets/photo.png" />`
-
-C - `<Image source={require('./assets/photo.png')} />` or by importing the file and passing the import as `source`
-
-D - `<img src={require('./assets/photo.png')} />`
-
----
-
-### Q12 (True/False)
-
-A network image rendered with `<Image source={{ uri: url }} />` will appear on screen even if no `width` or `height` style is provided.
-
-A - True
-
-B - False
-
----
-
-### Q13
-
-Why does a network image not appear when no explicit dimensions are provided?
-
-A - React Native blocks all network requests by default
-
-B - The `uri` prop requires a `resizeMode` prop to be set before the image can render
-
-C - React Native cannot determine the size of a remote image at bundle time, so the component occupies zero space without explicit dimensions
-
-D - Network images must be downloaded to local storage before they can be displayed
-
----
-
-### Q14
-
-Which prop does `TextInput` use to notify the component of new text entered by the user?
-
-A - `onChange`
-
-B - `onInput`
-
-C - `onChangeText`
-
-D - `onTextChange`
-
----
-
-### Q15 (True/False)
-
-`TextInput` in React Native is an uncontrolled component by default; you do not need to pass a `value` prop to use it.
-
-A - True
-
-B - False
-
----
-
-### Q16
-
-A learner adds a `TextInput` to their screen and taps on it. On iOS, the software keyboard appears and covers the input field. Which component is designed to fix this problem?
-
-A - `SafeAreaView`
-
-B - `ScrollView`
-
-C - `KeyboardAvoidingView`
-
-D - `KeyboardDismissView`
-
----
-
-### Q17
-
-What does `SafeAreaView` from `react-native-safe-area-context` do?
-
-A - Prevents the software keyboard from covering input fields
-
-B - Makes all content in the view scrollable
-
-C - Applies automatic padding to keep content within the device's safe area, away from notches and status bars
-
-D - Locks the screen orientation to portrait mode
-
----
-
-### Q18
-
-Why should `npx expo install` be used instead of `npm install` when adding a library to an Expo project?
-
-A - `npm install` does not work inside Expo projects
-
-B - `npx expo install` selects the library version compatible with the installed Expo SDK automatically
-
-C - `npx expo install` is faster than `npm install` for large packages
-
-D - `npm install` cannot install native modules
-
----
-
-### Q19
-
-In the correct nesting order for handling both safe area and keyboard, which component sits immediately inside `SafeAreaView`?
-
-A - `ScrollView`
-
-B - `View`
-
-C - `KeyboardAvoidingView`
-
-D - `TextInput`
-
----
-
-### Q20 (True/False)
-
-`ScrollView` renders only the items currently visible on screen, making it suitable for very long lists.
-
-A - True
-
-B - False
-
----
-
-### Q21
-
-What is the default value of `flexDirection` in React Native?
-
-A - `row`
-
-B - `row-reverse`
-
-C - `column-reverse`
-
-D - `column`
-
----
-
-### Q22
-
-A `View` with `flex: 1` is placed inside a container that also has `flex: 1`. What does `flex: 1` on the child mean?
-
-A - The child takes exactly 1 pixel of space
-
-B - The child expands to fill all available space in the container, sharing it equally with other `flex: 1` siblings
-
-C - The child is hidden until the user scrolls to it
-
-D - The child takes 1% of the parent's size
-
----
-
-### Q23
-
-Three `View` children are placed inside a container. The first has `flex: 2`, the second has `flex: 1`, and the third has `flex: 1`. How is the available space divided?
-
-A - The first takes half the space and the second and third take a quarter each
-
-B - All three take equal space because the values are relative
-
-C - The first takes two-thirds and the second and third each take one-sixth
-
-D - The first takes 2 pixels and the second and third take 1 pixel each
-
----
-
-### Q24 (True/False)
-
-Removing `flex: 1` from the root container `View` has no effect on how `justifyContent` and `alignItems` behave.
-
-A - True
-
-B - False
-
----
-
-### Q25
-
-Which property controls alignment of items along the **main axis** in a flex container?
-
-A - `alignItems`
-
-B - `alignSelf`
-
-C - `justifyContent`
-
-D - `alignContent`
-
----
-
-### Q26
-
-Which property controls alignment of items along the **cross axis** in a flex container?
-
-A - `justifyContent`
-
-B - `alignItems`
-
-C - `flexGrow`
-
-D - `flexWrap`
-
----
-
-### Q27
-
-What is the default value of `alignItems` in a React Native `View`?
-
-A - `flex-start`
-
-B - `center`
-
-C - `flex-end`
-
-D - `stretch`
-
----
-
-### Q28
-
-A learner wants to apply a shared base style and a conditional override to the same component. Which approach is idiomatic in React Native?
-
-A - `style={isActive ? styles.base + styles.active : styles.base}`
-
-B - `style={[styles.base, isActive && styles.active]}`
-
-C - `style={Object.assign(styles.base, styles.active)}`
-
-D - `className={isActive ? 'base active' : 'base'}`
-
----
-
-### Q29
-
-A learner has a container with `flexDirection: 'row'` and three equal children, each with `flex: 1`. They set `justifyContent: 'space-between'` on the container. What will they observe?
-
-A - The three children are centred in a single column
-
-B - The first child is at the left edge, the last is at the right edge, and the middle child is centred between them
-
-C - All three children are pushed to the right edge of the container
-
-D - The children overflow outside the container
-
----
-
-### Q30
-
-A learner writes the following code. What problem will they encounter on iOS when the keyboard appears?
-
-```jsx
-<SafeAreaProvider>
-  <SafeAreaView style={{ flex: 1 }}>
-    <ScrollView>
-      <KeyboardAvoidingView behavior="padding">
-        <TextInput placeholder="Enter text" />
-      </KeyboardAvoidingView>
-    </ScrollView>
-  </SafeAreaView>
-</SafeAreaProvider>
-```
-
-A - The `SafeAreaView` will not apply safe-area insets when nested inside `SafeAreaProvider`
-
-B - The `ScrollView` will not scroll because it is missing a `style` prop
-
-C - `KeyboardAvoidingView` will not function correctly because it is inside `ScrollView` instead of wrapping it
-
-D - `TextInput` will not accept any keyboard input when placed inside `KeyboardAvoidingView`
-
----
+D - Two-fifths
