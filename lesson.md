@@ -4,14 +4,24 @@
 
 - **Duration:** ~2 hours (hands-on lab)
 - **Prerequisites:** Lesson 2.14 (Expo environment set up, Expo Go working on your device or emulator, basic familiarity with `View`, `Text`, and `StyleSheet`)
+- **Timing guide:**
+  - Setup: 5 min
+  - Part 1 (Core Components and Styling): 20 min
+  - Part 2 (The `Image` Component): 15 min
+  - Part 3 (`TextInput`, `ScrollView`, `KeyboardAvoidingView`): 35 min
+  - Part 4 (The `Button` Component): 20 min
+  - Part 5 (Flexbox Layout): 20 min
+  - Buffer / wrap-up: 5 min
+  - The closing "Build a Layout with Flex Ratios" activity is optional; treat it as a stretch goal alongside the Bonus Challenges if time is short.
 
 ## Learning Objectives
 
 By the end of this lesson, you will be able to:
 
-1. **Use** the core React Native components (`View`, `Text`, `Image`, `TextInput`, `ScrollView`, and `KeyboardAvoidingView`) to compose a functional mobile screen
-2. **Apply** React Native styling with `StyleSheet.create()`, understanding where it differs from CSS
-3. **Design** mobile layouts using Flexbox, controlling axis direction, alignment, and proportional sizing
+1. **Use** core React Native components (`View`, `Text`, `Image`, `TextInput`, `ScrollView`, `Button`) to compose a functional mobile screen
+2. **Apply** `StyleSheet.create()` to style components, and solve mobile-specific layout problems with `SafeAreaView` and `KeyboardAvoidingView`
+3. **Explain** how Flexbox works in React Native, including the main axis, the cross axis, and the core layout properties
+4. **Build** mobile layouts using Flexbox properties such as `flexDirection`, `justifyContent`, `alignItems`, and `flex`
 
 ---
 
@@ -20,8 +30,22 @@ By the end of this lesson, you will be able to:
 This lesson uses a fresh Expo app. Open a terminal and run:
 
 ```bash
-npx create-expo-app --template blank CompAndLayoutApp
-cd CompAndLayoutApp
+npx create-expo-app --template blank components-app
+```
+
+You will again be prompted to choose an Expo SDK version:
+
+```
+? Select an Expo SDK version: › - Use arrow-keys. Return to submit.
+    Latest (SDK 57) - Recommended for most projects
+❯   For learning with Expo Go (SDK 54)
+    Other SDK version…
+```
+
+Use the arrow keys to select **"For learning with Expo Go (SDK 54)"**, just as you did in Lesson 2.14. This keeps the project compatible with the Expo Go app already installed on your device or emulator.
+
+```bash
+cd components-app
 npx expo start
 ```
 
@@ -32,12 +56,13 @@ Open the emulator or scan the QR code with Expo Go. Confirm the default screen l
 Open `App.js` and replace its contents with the following starting point:
 
 ```jsx
+// App.js
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Components and Layout App</Text>
+      <Text style={styles.header}>Components App</Text>
     </View>
   );
 }
@@ -57,7 +82,7 @@ const styles = StyleSheet.create({
 });
 ```
 
-**Device check:** you should see "Components and Layout App" centred on screen.
+**Device check:** you should see "Components App" centred on screen.
 
 ---
 
@@ -101,12 +126,13 @@ React Native does not use CSS files or the `className` prop. All styling is writ
 Update `App.js` to add a sub-header text and a new style:
 
 ```jsx
+// App.js
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Components and Layout App</Text>
+      <Text style={styles.header}>Components App</Text>
       <Text style={styles.subHeader}>Hello World!</Text>
     </View>
   );
@@ -139,26 +165,55 @@ const styles = StyleSheet.create({
 
 **Device check:** the header now has an underline and the sub-header appears below it.
 
----
+### Step 2: Extract a `Header` component
 
-## Part 2: The `Image` Component
+The `header` style is only used once, but as an app grows, a title like this is often reused across multiple screens with a different colour each time. Extract it into its own component to see how React Native components are built from the same primitives you have already been using.
 
-The `Image` component displays images from two sources: local files bundled with the app, and remote URLs.
-
-### Step 1: Add a local image
-
-Download or copy an image file (your instructor will provide one) and place it in `assets/images/`. Then import and display it:
+Create a `components` folder in your project root, and inside it a file named `Header.js`:
 
 ```jsx
-import { StyleSheet, Text, View, Image } from 'react-native';
-import monkeyImg from './assets/images/monkey.png';
+// components/Header.js
+import { StyleSheet, Text } from 'react-native';
+
+function Header({ title, color = 'darkblue' }) {
+  return (
+    <Text style={[styles.header, { color, borderBottomColor: color }]}>
+      {title}
+    </Text>
+  );
+}
+
+const styles = StyleSheet.create({
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    borderBottomWidth: 1,
+    marginBottom: 20,
+    paddingBottom: 5,
+  },
+});
+
+export default Header;
+```
+
+Notice the `style` prop here is an array: `[styles.header, { color, borderBottomColor: color }]`. React Native merges the objects in order, so the second object overrides any matching keys in `styles.header`. Here `borderBottomColor` is set from the same `color` prop as the text, so the underline always matches the title, whatever colour is passed in. This is the standard way to combine a shared base style with values that change per instance; you will see this pattern again, formally, in the Flexbox section later in this lesson.
+
+> **Common mistake:** In CSS you would write `border-bottom: 1px solid darkblue` as a single shorthand property. React Native has no shorthand; `borderBottomWidth` and `borderBottomColor` must be set separately, exactly as you saw earlier in this lesson.
+
+The `color` prop also has a default value of `'darkblue'`, so `<Header title="Components App" />` works even without passing a `color`.
+
+Import `Header` in `App.js` and replace the existing `Text` title with it:
+
+```jsx
+// App.js
+import { StyleSheet, Text, View } from 'react-native';
+import Header from './components/Header';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Components and Layout App</Text>
-      <Text style={styles.subHeader}>Local Image</Text>
-      <Image source={monkeyImg} style={styles.localImage} />
+      <Header title="Components App" color="darkblue" />
+      <Text style={styles.subHeader}>Hello World!</Text>
     </View>
   );
 }
@@ -170,69 +225,159 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  header: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: 'darkblue',
-    borderBottomWidth: 1,
-    borderBottomColor: 'darkblue',
-    marginBottom: 20,
-    paddingBottom: 5,
-  },
   subHeader: {
     fontSize: 18,
     fontWeight: '600',
     color: 'darkblue',
     marginBottom: 10,
   },
-  localImage: {
-    width: 200,
-    height: 200,
-    borderWidth: 2,
-    borderColor: '#eee',
-    borderRadius: 10,
-    marginBottom: 20,
+});
+```
+
+The `header` style and its underline are no longer needed in `App.js`; they now live inside `Header.js`.
+
+**Device check:** the title still reads "Components App" in dark blue, exactly as before, but it is now rendered by a reusable component.
+
+> **Common mistake:** Forgetting the array brackets and writing `style={styles.header, { color, borderBottomColor: color }}`. This is a JavaScript comma expression, not a style merge; it silently evaluates to just the last object, so `styles.header` is dropped entirely and the text loses its `fontSize`, `fontWeight`, and underline.
+
+## Activity: Build a `SubHeader` Component
+
+You have just extracted `Header` into a reusable component. The `subHeader` style is used even more often across this lesson (you will see it again for "Local Image", "Remote Image", and later "Sign Up Form"). On your own, extract it the same way.
+
+**Task:** Create `components/SubHeader.js`, a component that accepts `title` and `color` props and renders the text with the `subHeader` style. Replace the `<Text style={styles.subHeader}>Hello World!</Text>` line in `App.js` with your new component.
+
+**Hints:**
+1. Follow the same shape as `Header.js`: a function component, a local `StyleSheet.create()`, a default export
+2. Give `color` a default value of `'darkblue'`, the same way `Header` defaults `color`
+3. Merge the base style with the color override using the array form: `[styles.subHeader, { color }]`
+4. Remember to remove the now-unused `subHeader` style from `App.js`'s own stylesheet once it lives in `SubHeader.js`
+5. Import `SubHeader` in `App.js` and use it as `<SubHeader title="Hello World!" />`
+
+<details>
+<summary>Reference solution</summary>
+
+```jsx
+// components/SubHeader.js
+import { StyleSheet, Text } from 'react-native';
+
+function SubHeader({ title, color = 'darkblue' }) {
+  return <Text style={[styles.subHeader, { color }]}>{title}</Text>;
+}
+
+const styles = StyleSheet.create({
+  subHeader: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 10,
+  },
+});
+
+export default SubHeader;
+```
+
+```jsx
+// App.js
+import { StyleSheet, View } from 'react-native';
+import Header from './components/Header';
+import SubHeader from './components/SubHeader';
+
+export default function App() {
+  return (
+    <View style={styles.container}>
+      <Header title="Components App" color="darkblue" />
+      <SubHeader title="Hello World!" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 ```
 
-**Device check:** the image appears with a rounded border.
+</details>
+
+From this point on, the lesson uses `<Header title="Components App" color="darkblue" />` and `<SubHeader title="..." />` in place of the raw `Text` elements.
+
+---
+
+## Part 2: The `Image` Component
+
+The `Image` component displays images from two sources: local files bundled with the app, and remote URLs.
+
+### Step 1: Add a local image
+
+Copy `ntu-building.webp` (provided in the lesson `assets/images/` folder) into your project's `assets/images/` folder. Then import and display it:
+
+```jsx
+// App.js
+import { StyleSheet, View, Image } from 'react-native';
+import Header from './components/Header';
+import SubHeader from './components/SubHeader';
+
+export default function App() {
+  return (
+    <View style={styles.container}>
+      <Header title="Components App" color="darkblue" />
+      <SubHeader title="Local Image" />
+      <Image
+        source={require('./assets/images/ntu-building.webp')}
+        style={styles.bannerImg}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bannerImg: {
+    width: '90%',
+    resizeMode: 'contain',
+  },
+});
+```
+
+**Device check:** the NTU building image appears, scaled to 90% of the screen width.
 
 ### Step 2: Add a network image
 
 Network images require an explicit `width` and `height` because React Native cannot determine their dimensions ahead of time.
 
-Add the image URL and a second `Image` component below the local one:
+Add a second `Image` component below the local one:
 
 ```jsx
-const imageUrl =
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Dog_Breeds.jpg/320px-Dog_Breeds.jpg';
-```
-
-```jsx
-<Text style={styles.subHeader}>Remote Image</Text>
+// App.js
+<SubHeader title="Remote Image" />
 <Image
-  source={{ uri: imageUrl }}
-  style={styles.networkImage}
+  source={{ uri: 'https://i.imgur.com/9wvRTDo.png' }}
+  style={styles.image}
 />
 ```
 
 And the style:
 
 ```jsx
-networkImage: {
-  width: 200,
-  height: 200,
-  borderWidth: 2,
-  borderColor: '#eee',
-  borderRadius: 10,
+// App.js
+image: {
+  width: 350,
+  height: 350,
   marginBottom: 20,
 },
 ```
 
 **Device check:** both images appear on screen.
 
-> **Common mistake:** Using `source={imageUrl}` instead of `source={{ uri: imageUrl }}`. Network images require the object form with a `uri` key.
+> **Common mistake:** Using `source={'https://i.imgur.com/9wvRTDo.png'}` instead of `source={{ uri: 'https://i.imgur.com/9wvRTDo.png' }}`. Network images require the object form with a `uri` key.
 
 > **Why does nothing appear without a size?** React Native needs to know the rendered dimensions before it can fetch and display a network image. Without `width` and `height` (or a `flex` value that gives the component a size), the image occupies zero space and is invisible.
 
@@ -240,39 +385,176 @@ networkImage: {
 
 ## Part 3: `TextInput`, `ScrollView`, and `KeyboardAvoidingView`
 
-### Step 1: Add a `TextInput`
+From this point on, `components-app` becomes a sign-up page for an "AI Engineering Course", so you can practise composing a screen that looks closer to a real app.
 
-`TextInput` is React Native's equivalent of `<input type="text">`. It is a controlled component: you manage its value with `useState`.
+### Step 1: Build the sign-up page content
 
-Update your imports and add state and a `TextInput` to the screen:
+Replace the contents of `App.js` with the new screen. This reuses the same two images from Part 2, but with new headings and a paragraph of body copy:
 
 ```jsx
-import { StyleSheet, Text, View, Image, TextInput } from 'react-native';
-import { useState } from 'react';
-import monkeyImg from './assets/images/monkey.png';
-
-const imageUrl =
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Dog_Breeds.jpg/320px-Dog_Breeds.jpg';
+// App.js
+import { StyleSheet, View, Image, Text } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import Header from './components/Header';
+import SubHeader from './components/SubHeader';
 
 export default function App() {
-  const [text, setText] = useState('');
-
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Components and Layout App</Text>
-      <Text style={styles.subHeader}>Local Image</Text>
-      <Image source={monkeyImg} style={styles.localImage} />
-      <Text style={styles.subHeader}>Remote Image</Text>
-      <Image source={{ uri: imageUrl }} style={styles.networkImage} />
+      <Image
+        source={require('./assets/images/ntu-building.webp')}
+        style={styles.bannerImg}
+      />
+      <Header title="AI Engineering Course" color="darkblue" />
+      <Image
+        source={{ uri: 'https://i.imgur.com/9wvRTDo.png' }}
+        style={styles.image}
+      />
+      <SubHeader title="Sign Up Form" />
+      <Text style={styles.mainText}>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+        minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+        aliquip ex ea commodo consequat. Duis aute irure dolor in
+        reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+        culpa qui officia deserunt mollit anim id est laborum.
+      </Text>
+      <StatusBar style="dark" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bannerImg: {
+    width: '90%',
+    resizeMode: 'contain',
+  },
+  image: {
+    width: 350,
+    height: 350,
+    marginBottom: 20,
+  },
+  mainText: {
+    fontSize: 16,
+    marginBottom: 20,
+    paddingHorizontal: 20,
+  },
+});
+```
+
+**Device check:** the content overflows past the bottom of the screen. There is no way to reach the text below the fold.
+
+> **Why does the content overflow?** A plain `View` does not scroll. Once its children need more vertical space than the screen provides, the extra content simply renders off-screen with no way to reach it.
+
+### Step 2: Fix the overflow with `ScrollView`
+
+`ScrollView` makes its content scrollable whenever it does not fit on screen. Wrap the existing content in one:
+
+```jsx
+// App.js
+import { StyleSheet, Image, Text, ScrollView } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import Header from './components/Header';
+import SubHeader from './components/SubHeader';
+
+export default function App() {
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <Image
+        source={require('./assets/images/ntu-building.webp')}
+        style={styles.bannerImg}
+      />
+      <Header title="AI Engineering Course" color="darkblue" />
+      <Image
+        source={{ uri: 'https://i.imgur.com/9wvRTDo.png' }}
+        style={styles.image}
+      />
+      <SubHeader title="Sign Up Form" />
+      <Text style={styles.mainText}>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+        minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+        aliquip ex ea commodo consequat. Duis aute irure dolor in
+        reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+        culpa qui officia deserunt mollit anim id est laborum.
+      </Text>
+      <StatusBar style="dark" />
+    </ScrollView>
+  );
+}
+```
+
+**Device check:** you can now scroll down and read the entire paragraph.
+
+> **Why `contentContainerStyle` instead of `style`?** `ScrollView` has two style props. `style` sizes the scrollable viewport itself; `contentContainerStyle` styles the inner content, the same way `styles.container` styled your root `View` before. Passing layout styles like `alignItems` to the wrong one is a common source of confusion; when in doubt, styles that apply to the content (alignment, padding, background) belong on `contentContainerStyle`.
+
+### Step 3: Add `TextInput`s for name and email
+
+`TextInput` is React Native's equivalent of `<input type="text">`. Like its web counterpart, it can be used as a controlled component: you manage its value with `useState`, which is how this lesson uses it throughout.
+
+> **Different from React web:** `onChangeText` passes the new string directly, not an event. There is no `event.target.value` to read, as there would be with `onChange` on a web `<input>`.
+
+Add two inputs, one for name and one for email:
+
+```jsx
+// App.js
+import { StyleSheet, Image, Text, ScrollView, TextInput } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { useState } from 'react';
+import Header from './components/Header';
+import SubHeader from './components/SubHeader';
+
+export default function App() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <Image
+        source={require('./assets/images/ntu-building.webp')}
+        style={styles.bannerImg}
+      />
+      <Header title="AI Engineering Course" color="darkblue" />
+      <Image
+        source={{ uri: 'https://i.imgur.com/9wvRTDo.png' }}
+        style={styles.image}
+      />
+      <SubHeader title="Sign Up Form" />
+      <Text style={styles.mainText}>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+        minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+        aliquip ex ea commodo consequat. Duis aute irure dolor in
+        reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+        culpa qui officia deserunt mollit anim id est laborum.
+      </Text>
       <TextInput
         style={styles.textInput}
-        value={text}
-        onChangeText={setText}
-        placeholder="Type here..."
+        placeholder="Enter your name"
+        value={name}
+        onChangeText={setName}
         autoCorrect={false}
         autoComplete="off"
       />
-    </View>
+      <TextInput
+        style={styles.textInput}
+        placeholder="Enter your email"
+        value={email}
+        onChangeText={setEmail}
+        autoCorrect={false}
+        autoComplete="off"
+      />
+      <StatusBar style="dark" />
+    </ScrollView>
   );
 }
 ```
@@ -280,6 +562,7 @@ export default function App() {
 Add the `textInput` style:
 
 ```jsx
+// App.js
 textInput: {
   height: 40,
   width: '70%',
@@ -291,7 +574,7 @@ textInput: {
 },
 ```
 
-**Device check:** a text input appears below the images.
+**Device check:** two labelled inputs appear below the paragraph.
 
 You will now notice two problems:
 
@@ -300,7 +583,7 @@ You will now notice two problems:
 
 You will fix both of these in the next steps.
 
-### Step 2: Fix the notch with `SafeAreaView`
+### Step 4: Fix the notch with `SafeAreaView`
 
 A hardcoded `marginTop` is not reliable because different devices have notches and status bars of different sizes. The correct solution is `react-native-safe-area-context`, which measures the safe area on any device automatically.
 
@@ -312,61 +595,75 @@ npx expo install react-native-safe-area-context
 
 > **Why `npx expo install` and not `npm install`?** Expo manages native library versions to match the installed Expo SDK. Using `npx expo install` picks the correct version for your project automatically.
 
-Update your imports and wrap the component tree in `SafeAreaProvider` and `SafeAreaView`:
+Update your imports and wrap the `ScrollView` in `SafeAreaProvider` and `SafeAreaView`:
 
 ```jsx
-import { StyleSheet, Text, View, Image, TextInput } from 'react-native';
+// App.js
+import { StyleSheet, Image, Text, ScrollView, TextInput } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import monkeyImg from './assets/images/monkey.png';
-
-const imageUrl =
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Dog_Breeds.jpg/320px-Dog_Breeds.jpg';
+import Header from './components/Header';
+import SubHeader from './components/SubHeader';
 
 export default function App() {
-  const [text, setText] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-        <View style={styles.container}>
-          <Text style={styles.header}>Components and Layout App</Text>
-          <Text style={styles.subHeader}>Local Image</Text>
-          <Image source={monkeyImg} style={styles.localImage} />
-          <Text style={styles.subHeader}>Remote Image</Text>
-          <Image source={{ uri: imageUrl }} style={styles.networkImage} />
+        <ScrollView contentContainerStyle={styles.container}>
+          <Image
+            source={require('./assets/images/ntu-building.webp')}
+            style={styles.bannerImg}
+          />
+          <Header title="AI Engineering Course" color="darkblue" />
+          <Image
+            source={{ uri: 'https://i.imgur.com/9wvRTDo.png' }}
+            style={styles.image}
+          />
+          <SubHeader title="Sign Up Form" />
+          <Text style={styles.mainText}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+            enim ad minim veniam, quis nostrud exercitation ullamco laboris
+            nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat
+            nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+            sunt in culpa qui officia deserunt mollit anim id est laborum.
+          </Text>
           <TextInput
             style={styles.textInput}
-            value={text}
-            onChangeText={setText}
-            placeholder="Type here..."
+            placeholder="Enter your name"
+            value={name}
+            onChangeText={setName}
             autoCorrect={false}
             autoComplete="off"
           />
-        </View>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Enter your email"
+            value={email}
+            onChangeText={setEmail}
+            autoCorrect={false}
+            autoComplete="off"
+          />
+          <StatusBar style="dark" />
+        </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
 ```
 
-Also remove `justifyContent: 'center'` from the `container` style. With `SafeAreaView` in place, you want content to flow from the top of the safe area, not be centred vertically.
-
-```jsx
-container: {
-  flex: 1,
-  backgroundColor: '#fff',
-  alignItems: 'center',
-},
-```
-
 **Device check:** content is no longer hidden behind the notch.
 
 > `SafeAreaProvider` sits at the root of the tree and calculates the safe-area insets for the device. `SafeAreaView` is a `View` that automatically applies those insets as padding. The two components must always be used together.
 
-### Step 3: Fix the keyboard and enable scrolling
+### Step 5: Fix the keyboard with `KeyboardAvoidingView`
 
-Wrapping content in `ScrollView` makes the page scrollable when content overflows the screen. `KeyboardAvoidingView` shifts or resizes the layout when the software keyboard appears, preventing it from covering the input.
+`KeyboardAvoidingView` shifts or resizes the layout when the software keyboard appears, preventing it from covering the input.
 
 The correct nesting order is:
 
@@ -375,51 +672,77 @@ SafeAreaProvider
   SafeAreaView
     KeyboardAvoidingView
       ScrollView
-        View  (your content)
+        (your content)
 ```
 
-Update your imports and component tree:
+Update your imports and wrap the `ScrollView` in `KeyboardAvoidingView`:
 
 ```jsx
+// App.js
 import {
   StyleSheet,
-  Text,
-  View,
   Image,
-  TextInput,
+  Text,
   ScrollView,
+  TextInput,
   KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import monkeyImg from './assets/images/monkey.png';
-
-const imageUrl =
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Dog_Breeds.jpg/320px-Dog_Breeds.jpg';
+import Header from './components/Header';
+import SubHeader from './components/SubHeader';
 
 export default function App() {
-  const [text, setText] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
-          <ScrollView>
-            <View style={styles.container}>
-              <Text style={styles.header}>Components and Layout App</Text>
-              <Text style={styles.subHeader}>Local Image</Text>
-              <Image source={monkeyImg} style={styles.localImage} />
-              <Text style={styles.subHeader}>Remote Image</Text>
-              <Image source={{ uri: imageUrl }} style={styles.networkImage} />
-              <TextInput
-                style={styles.textInput}
-                value={text}
-                onChangeText={setText}
-                placeholder="Type here..."
-                autoCorrect={false}
-                autoComplete="off"
-              />
-            </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={{ flex: 1 }}
+        >
+          <ScrollView contentContainerStyle={styles.container}>
+            <Image
+              source={require('./assets/images/ntu-building.webp')}
+              style={styles.bannerImg}
+            />
+            <Header title="AI Engineering Course" color="darkblue" />
+            <Image
+              source={{ uri: 'https://i.imgur.com/9wvRTDo.png' }}
+              style={styles.image}
+            />
+            <SubHeader title="Sign Up Form" />
+            <Text style={styles.mainText}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+              in reprehenderit in voluptate velit esse cillum dolore eu
+              fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+              proident, sunt in culpa qui officia deserunt mollit anim id est
+              laborum.
+            </Text>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Enter your name"
+              value={name}
+              onChangeText={setName}
+              autoCorrect={false}
+              autoComplete="off"
+            />
+            <TextInput
+              style={styles.textInput}
+              placeholder="Enter your email"
+              value={email}
+              onChangeText={setEmail}
+              autoCorrect={false}
+              autoComplete="off"
+            />
+            <StatusBar style="dark" />
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -428,39 +751,44 @@ export default function App() {
 }
 ```
 
-The `behavior` prop controls how `KeyboardAvoidingView` responds when the keyboard appears:
+The `behavior` prop controls how `KeyboardAvoidingView` responds when the keyboard appears. Expo's own guidance is to set it conditionally by platform:
 
-- `"padding"`: adds padding at the bottom of the view (usually the least disruptive)
-- `"height"`: reduces the height of the view (often works better on Android)
-- `"position"`: shifts the entire view upward (more aggressive; can cause visible jumping)
+- **iOS:** use `"padding"`. iOS does not resize the screen when the keyboard appears, so the view needs padding added at the bottom to push content up above it.
+- **Android:** use `undefined` (no behavior at all). Android already resizes the window when the keyboard appears by default, so adding a `KeyboardAvoidingView` behavior on top of that tends to cause the exact double-resizing glitches you are trying to avoid.
 
-**Device check:** the screen scrolls, and tapping the input field does not cause the keyboard to cover it.
+`Platform.OS === 'ios' ? 'padding' : undefined` captures exactly this split, and is the pattern used in [Expo's keyboard handling guide](https://docs.expo.dev/guides/keyboard-handling/).
+
+The `behavior` prop also accepts two other values, and Expo's guide encourages experimenting with them, since a different option can work better depending on your specific layout:
+
+- `"height"`: reduces the height of the view instead of adding padding
+- `"position"`: shifts the entire view's position upward; more aggressive, and can cause visible jumping
+
+Try swapping `"padding"` for `"height"` on iOS and compare the feel; there is no single right answer for every screen.
+
+**Device check:** tapping an input field no longer causes the keyboard to cover it.
 
 > **Common mistake:** Placing `ScrollView` outside `KeyboardAvoidingView`. The scroll container must be inside the keyboard-avoiding wrapper so it can be resized when the keyboard appears. If you get this the wrong way around, the keyboard will still cover the input on iOS.
 
 ---
 
-## Activity: Add a Notes Input
+## Activity: Add a Notes Field
 
-You now have a working screen with images and a text input. On your own, add a second labelled input field for notes.
+You now have a working sign-up form with a name and email input. On your own, add a third field for a short note.
 
-**Task:** Below the existing `TextInput`, add:
-- A `Text` label reading "Notes"
-- A multi-line `TextInput` for entering notes
+**Task:** Below the existing email `TextInput`, add a multi-line `TextInput` for entering a note, following the same style as the name and email fields (no separate label; use a `placeholder` instead).
 
 **Hints:**
 1. The `multiline` prop on `TextInput` enables multi-line entry
 2. Multi-line inputs typically need a larger `height` in the stylesheet (for example, `80`)
 3. On iOS, `textAlignVertical` does not work on `Text`; use it on `TextInput` instead, setting it to `"top"` so text starts from the top of the field rather than the middle
-4. Add a `subHeader` style `Text` label above the input
 
 <details>
 <summary>Reference solution</summary>
 
-In the JSX, after the existing `TextInput`:
+In the JSX, after the existing email `TextInput`:
 
 ```jsx
-<Text style={styles.subHeader}>Notes</Text>
+// App.js
 <TextInput
   style={styles.notesInput}
   value={notes}
@@ -475,12 +803,14 @@ In the JSX, after the existing `TextInput`:
 Add state:
 
 ```jsx
+// App.js
 const [notes, setNotes] = useState('');
 ```
 
 Add the style:
 
 ```jsx
+// App.js
 notesInput: {
   height: 80,
   width: '70%',
@@ -496,19 +826,124 @@ notesInput: {
 
 ---
 
-## Part 4: Flexbox Layout
+## Part 4: The `Button` Component
 
-For this section, create a separate Expo app. This keeps your `CompAndLayoutApp` clean, and gives you a dedicated playground you can refer back to later when building more complex layouts.
+### Step 1: Add a submit button
+
+React Native ships a basic `Button` component for triggering an action. Add one below your `Notes` input to submit the form:
+
+```jsx
+// App.js
+import { StyleSheet, Image, Text, ScrollView, TextInput, Button, KeyboardAvoidingView } from 'react-native';
+```
+
+```jsx
+// App.js
+<Button
+  title="Submit"
+  onPress={() => console.log({ name, email, notes })}
+/>
+```
+
+**Device check:** a button labelled "Submit" appears below the notes field. Tapping it logs the current form values to the terminal running `npx expo start`.
+
+> **Common mistake:** Expecting to see the console output on the device screen. `console.log` output appears in the terminal where Metro is running, not on the phone or emulator.
+
+### Step 2: The problem with `Button`
+
+Try adding a `style` prop to your `Button`:
+
+```jsx
+// App.js
+<Button
+  title="Submit"
+  onPress={() => console.log({ name, email, notes })}
+  style={{ backgroundColor: 'darkblue', padding: 20 }}
+/>
+```
+
+**Device check:** nothing changes. `Button` silently ignores the `style` prop.
+
+`Button` only accepts a small, fixed set of props: `title`, `onPress`, `color`, and `disabled`. There is no way to customise its border, padding, font, or shape. Worse, the `color` prop behaves differently per platform: on iOS it changes the text color, and on Android it changes the background color. The same line of code produces two different-looking buttons.
+
+For any custom appearance, you need to build your own button using `Pressable`, the base component React Native provides for building custom touchable elements.
+
+Remove the `style` prop you just added; you will replace `Button` with your own component next.
+
+### Step 3: Build a reusable `Button` component
+
+Create a `components` folder in your project root, and inside it a file named `Button.js`:
+
+```jsx
+// components/Button.js
+import { Pressable, Text, StyleSheet } from 'react-native';
+
+export default function Button({ title, onPress, color = '#4263eb' }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.button,
+        { backgroundColor: color, opacity: pressed ? 0.8 : 1 },
+      ]}
+    >
+      <Text style={styles.text}>{title}</Text>
+    </Pressable>
+  );
+}
+
+const styles = StyleSheet.create({
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  text: {
+    color: '#fff',
+    fontWeight: '700',
+  },
+});
+```
+
+A few things to notice:
+
+- `Pressable` accepts a normal `style` prop, so it works with `StyleSheet` like any other component
+- The `style` prop can be a function that receives `{ pressed }`, letting you change the appearance while the button is being held down; here it dims the button to `opacity: 0.8`
+- The `color` prop has a default value, so `<Button title="Submit" onPress={...} />` still works without specifying a color
+
+Import your new component in `App.js` and replace the native `Button`:
+
+```jsx
+// App.js
+import Button from './components/Button';
+```
+
+```jsx
+// App.js
+<Button title="Submit" onPress={() => console.log({ name, email, notes })} />
+```
+
+**Device check:** the submit button now has a rounded, filled background, and dims slightly when pressed.
+
+> **Why does this look and feel more like a "real" button?** Most production apps never use the built-in `Button` component for exactly this reason. Building one custom `Pressable`-based button and reusing it everywhere keeps the appearance consistent across iOS and Android.
+
+---
+
+## Part 5: Flexbox Layout
+
+For this section, create a separate Expo app. This keeps your `components-app` clean, and gives you a dedicated playground you can refer back to later when building more complex layouts.
 
 ```bash
-npx create-expo-app --template blank LearnFlexApp
-cd LearnFlexApp
+npx create-expo-app --template blank learn-flex-app
+cd learn-flex-app
 npx expo start
 ```
 
 Replace `App.js` with this starter code. The coloured boxes will make it easy to see how each Flexbox property affects the layout visually.
 
 ```jsx
+// App.js
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -550,6 +985,7 @@ Adding `flex: 1` to a child item tells it to expand and fill the available space
 Update the `item` style:
 
 ```jsx
+// App.js
 item: {
   flex: 1,
   justifyContent: 'center',
@@ -562,6 +998,7 @@ item: {
 You can use different `flex` values to create proportional splits. To give the first box three-fifths of the space and the others one-fifth each:
 
 ```jsx
+// App.js
 <View style={[styles.item, { backgroundColor: '#51cf66', flex: 3 }]}>
 <View style={[styles.item, { backgroundColor: '#fcc419', flex: 1 }]}>
 <View style={[styles.item, { backgroundColor: '#ff6b6b', flex: 1 }]}>
@@ -576,6 +1013,7 @@ By default, `View` lays out its children in a **column** (top to bottom). This i
 Try changing the `container` style:
 
 ```jsx
+// App.js
 container: {
   flex: 1,
   backgroundColor: '#fff',
@@ -601,6 +1039,7 @@ The **main axis** is the direction items are placed (determined by `flexDirectio
 With `flexDirection: "row"` set on the container, experiment with each value:
 
 ```jsx
+// App.js
 justifyContent: 'flex-start',   // default: items packed at the start
 justifyContent: 'flex-end',     // items packed at the end
 justifyContent: 'center',       // items centred
@@ -614,6 +1053,7 @@ justifyContent: 'space-evenly', // equal space between items and edges
 With `flexDirection: "row"`, the cross axis is vertical. Experiment:
 
 ```jsx
+// App.js
 alignItems: 'stretch',    // default: items stretch to fill the container height
 alignItems: 'flex-start', // items align to the top
 alignItems: 'flex-end',   // items align to the bottom
@@ -628,10 +1068,11 @@ alignItems: 'baseline',   // items align by their text baseline
 The `style` prop accepts an array of style objects. Later values override earlier ones. This is the idiomatic pattern for applying a base style with a dynamic override:
 
 ```jsx
+// App.js
 <View style={[styles.item, { backgroundColor: '#51cf66', flex: 3 }]}>
 ```
 
-You have been using this throughout this section. It is also useful for conditional styles:
+You have been using this throughout this section, and it is the same pattern behind the `[styles.header, { color }]` merge inside your `Header` component from Part 1. It is also useful for conditional styles:
 
 ```jsx
 <View style={[styles.button, isActive && styles.buttonActive]}>
@@ -639,9 +1080,11 @@ You have been using this throughout this section. It is also useful for conditio
 
 ---
 
-## Activity: Build a Layout with Flex Ratios
+## Activity (Optional): Build a Layout with Flex Ratios
 
-Using only `View`, `Text`, `flexDirection`, `justifyContent`, `alignItems`, and `flex` ratios, build the following layout in `LearnFlexApp`:
+If time allows, treat this as a stretch goal alongside the Bonus Challenges below.
+
+Using only `View`, `Text`, `flexDirection`, `justifyContent`, `alignItems`, and `flex` ratios, build the following layout in `learn-flex-app`:
 
 - A **header bar** at the top taking one-quarter of the screen height, with a dark background and white centred text reading "Header"
 - A **content area** taking the remaining three-quarters, with a light grey background and centred text reading "Content"
@@ -659,6 +1102,7 @@ Using only `View`, `Text`, `flexDirection`, `justifyContent`, `alignItems`, and 
 <summary>Reference solution</summary>
 
 ```jsx
+// App.js
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
@@ -709,7 +1153,7 @@ Work on as many as you can. They are listed in order of difficulty. No solutions
 
 ### Challenge 1: Styled `TextInput` with focus state
 
-In `CompAndLayoutApp`, style the `TextInput` so that its border colour changes when the field is focused.
+In `components-app`, style the `TextInput` so that its border colour changes when the field is focused.
 
 **Hints:**
 - Use `onFocus` and `onBlur` props on `TextInput`
@@ -718,16 +1162,16 @@ In `CompAndLayoutApp`, style the `TextInput` so that its border colour changes w
 
 ### Challenge 2: Card component
 
-Extract the image, label, and sub-header from `CompAndLayoutApp` into a reusable `Card` component that accepts `imageSource`, `title`, and `subtitle` as props. Display two cards in a column.
+Extract the banner image, header, and sub-header at the top of the sign-up screen in `components-app` into a reusable `Card` component that accepts `imageSource`, `title`, and `subtitle` as props.
 
 **Hints:**
 - Create a `components/` folder and add `Card.js`
-- The component should render a `View` wrapping a `Text` for the title, a `Text` for the subtitle, and an `Image`
-- Import and use it in `App.js` twice with different props
+- The component should render a `View` wrapping an `Image`, a `Text` for the title, and a `Text` for the subtitle
+- Import and use it in `App.js` in place of the existing banner image and headings
 
 ### Challenge 3: Three-column grid
 
-In `LearnFlexApp`, create a 3x2 grid of coloured boxes (three columns, two rows). Each box should be square and take equal width.
+In `learn-flex-app`, create a 3x2 grid of coloured boxes (three columns, two rows). Each box should be square and take equal width.
 
 **Hints:**
 - Use two row `View` containers, each with `flexDirection: 'row'`
@@ -736,7 +1180,7 @@ In `LearnFlexApp`, create a 3x2 grid of coloured boxes (three columns, two rows)
 
 ### Challenge 4: Responsive image width
 
-In `CompAndLayoutApp`, make the images fill the full width of the screen regardless of the device size.
+In `components-app`, make the images fill the full width of the screen regardless of the device size.
 
 **Hints:**
 - Import `Dimensions` from `react-native`
@@ -747,8 +1191,9 @@ In `CompAndLayoutApp`, make the images fill the full width of the screen regardl
 
 ## Summary
 
-- React Native provides its own set of primitive components instead of HTML elements. `View`, `Text`, `Image`, `TextInput`, and `ScrollView` cover the majority of everyday mobile UI needs.
+- React Native provides its own set of primitive components instead of HTML elements. `View`, `Text`, `Image`, `TextInput`, `ScrollView`, and `Button` cover the majority of everyday mobile UI needs.
 - All styling is JavaScript: camelCase property names, no units, no `className`. `StyleSheet.create()` is the preferred approach.
+- The built-in `Button` component has no `style` prop and behaves differently per platform. `Pressable` is the base component for building custom, reusable touchables.
 - Flexbox is the layout system in React Native. Key differences from CSS: `flexDirection` defaults to `"column"`, and `flex: 1` on the root container is required for alignment properties to take effect.
 - Mobile-specific problems require dedicated solutions: `SafeAreaView` for the device notch, `KeyboardAvoidingView` for the software keyboard.
 
@@ -760,4 +1205,5 @@ In `CompAndLayoutApp`, make the images fill the full width of the screen regardl
 - [React Native: Style](https://reactnative.dev/docs/style)
 - [React Native: Layout with Flexbox](https://reactnative.dev/docs/flexbox)
 - [React Native: TextInput](https://reactnative.dev/docs/textinput)
+- [React Native: Pressable](https://reactnative.dev/docs/pressable)
 - [Expo: Safe Area Context](https://docs.expo.dev/versions/latest/sdk/safe-area-context/)

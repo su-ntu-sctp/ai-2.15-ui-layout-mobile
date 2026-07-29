@@ -1,6 +1,6 @@
 # Pre-Reading: Lesson 2.15: UI Composition and Layout Management in Mobile Applications
 
-Timebox **2–3 hours** across these resources before the lesson. You do not need to memorise everything; focus on building a mental model so the hands-on lab clicks faster.
+Timebox **2.5–3 hours** across these resources before the lesson. You do not need to memorise everything; focus on building a mental model so the hands-on lab clicks faster.
 
 ---
 
@@ -51,7 +51,21 @@ Timebox **2–3 hours** across these resources before the lesson. You do not nee
 
 ---
 
-## 4. Scrollable Layouts and the Keyboard Problem
+## 4. The Button Component and Its Limits
+
+**Read (10 min)**
+
+- [React Native: Button](https://reactnative.dev/docs/button): Read the whole page. Note which props are required, and which platform difference affects the `color` prop.
+
+**Key ideas to take away:**
+
+- `Button` supports only a minimal, fixed set of props: `title`, `onPress`, `color`, and `disabled`. It does not accept a `style` prop, so its border, padding, font, and shape cannot be customised.
+- The `color` prop is not consistent across platforms: on iOS it sets the text color, on Android it sets the background color. The same code can look different on each platform.
+- For any custom appearance, React Native apps typically build their own button using `Pressable`, the base component for touchable elements, rather than relying on `Button`.
+
+---
+
+## 5. Scrollable Layouts and the Keyboard Problem
 
 **Read (15 min)**
 
@@ -76,6 +90,7 @@ Before the lesson, write down answers to these three questions:
 
 1. What is the difference between `flexDirection: 'column'` and `flexDirection: 'row'`? How does the main axis change between them?
 2. Why does a network image not appear if you do not provide a `width` and `height`?
-3. What is one concept from the pre-reading that you would like the instructor to demonstrate more clearly?
+3. Why might a production app avoid the built-in `Button` component in favour of a custom `Pressable`-based one?
+4. What is one concept from the pre-reading that you would like the instructor to demonstrate more clearly?
 
-Bring question 3 to class.
+Bring question 4 to class.
