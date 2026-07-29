@@ -8,7 +8,6 @@ This lesson builds on the React Native environment set up in Lesson 2.14. Learne
 
 - [Self Studies](./studies.md)
 - [Lesson](./lesson.md)
-- [Assessment](./assessment.md)
 - [Assignment](./assignment.md)
 
 ## Lesson Objectives
