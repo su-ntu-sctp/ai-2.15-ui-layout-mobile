@@ -418,7 +418,19 @@ export default function App() {
         aliquip ex ea commodo consequat. Duis aute irure dolor in
         reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
         pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-        culpa qui officia deserunt mollit anim id est laborum.
+        culpa qui officia deserunt mollit anim id est laborum. At vero eos et
+        accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium
+        voluptatum deleniti atque corrupti quos dolores et quas molestias
+        excepturi sint occaecati cupiditate non provident, similique sunt in
+        culpa qui officia deserunt mollitia animi, id est laborum et dolorum
+        fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam
+        libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit
+        quo minus id quod maxime placeat facere possimus, omnis voluptas
+        assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et
+        aut officiis debitis aut rerum necessitatibus saepe eveniet ut et
+        voluptates repudiandae sint et molestiae non recusandae. Itaque earum
+        rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus
+        maiores alias consequatur aut perferendis doloribus asperiores repellat.
       </Text>
       <StatusBar style="dark" />
     </View>
@@ -455,7 +467,7 @@ const styles = StyleSheet.create({
 
 ### Step 2: Fix the overflow with `ScrollView`
 
-`ScrollView` makes its content scrollable whenever it does not fit on screen. Wrap the existing content in one:
+`ScrollView` makes its content scrollable whenever it does not fit on screen. Wrap the existing content in one, and move `flex: 1` out of `styles.container` and onto the `ScrollView` itself:
 
 ```jsx
 // App.js
@@ -466,7 +478,7 @@ import SubHeader from './components/SubHeader';
 
 export default function App() {
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.container}>
       <Image
         source={require('./assets/images/ntu-building.webp')}
         style={styles.bannerImg}
@@ -484,17 +496,51 @@ export default function App() {
         aliquip ex ea commodo consequat. Duis aute irure dolor in
         reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
         pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-        culpa qui officia deserunt mollit anim id est laborum.
+        culpa qui officia deserunt mollit anim id est laborum. At vero eos et
+        accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium
+        voluptatum deleniti atque corrupti quos dolores et quas molestias
+        excepturi sint occaecati cupiditate non provident, similique sunt in
+        culpa qui officia deserunt mollitia animi, id est laborum et dolorum
+        fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam
+        libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit
+        quo minus id quod maxime placeat facere possimus, omnis voluptas
+        assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et
+        aut officiis debitis aut rerum necessitatibus saepe eveniet ut et
+        voluptates repudiandae sint et molestiae non recusandae. Itaque earum
+        rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus
+        maiores alias consequatur aut perferendis doloribus asperiores repellat.
       </Text>
       <StatusBar style="dark" />
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bannerImg: {
+    width: '90%',
+    resizeMode: 'contain',
+  },
+  image: {
+    width: 350,
+    height: 350,
+    marginBottom: 20,
+  },
+  mainText: {
+    fontSize: 16,
+    marginBottom: 20,
+    paddingHorizontal: 20,
+  },
+});
 ```
 
 **Device check:** you can now scroll down and read the entire paragraph.
 
-> **Why `contentContainerStyle` instead of `style`?** `ScrollView` has two style props. `style` sizes the scrollable viewport itself; `contentContainerStyle` styles the inner content, the same way `styles.container` styled your root `View` before. Passing layout styles like `alignItems` to the wrong one is a common source of confusion; when in doubt, styles that apply to the content (alignment, padding, background) belong on `contentContainerStyle`.
+> **Why `contentContainerStyle` instead of `style`?** `ScrollView` has two style props. `style` sizes the scrollable viewport itself; `contentContainerStyle` styles the inner content, the same way `styles.container` styled your root `View` before. `flex: 1` goes on `style`, so the viewport fills the screen. Styles that apply to the content (alignment, padding, background) belong on `contentContainerStyle`.
 
 ### Step 3: Add `TextInput`s for name and email
 
@@ -517,7 +563,7 @@ export default function App() {
   const [email, setEmail] = useState('');
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.container}>
       <Image
         source={require('./assets/images/ntu-building.webp')}
         style={styles.bannerImg}
@@ -535,7 +581,19 @@ export default function App() {
         aliquip ex ea commodo consequat. Duis aute irure dolor in
         reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
         pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-        culpa qui officia deserunt mollit anim id est laborum.
+        culpa qui officia deserunt mollit anim id est laborum. At vero eos et
+        accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium
+        voluptatum deleniti atque corrupti quos dolores et quas molestias
+        excepturi sint occaecati cupiditate non provident, similique sunt in
+        culpa qui officia deserunt mollitia animi, id est laborum et dolorum
+        fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam
+        libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit
+        quo minus id quod maxime placeat facere possimus, omnis voluptas
+        assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et
+        aut officiis debitis aut rerum necessitatibus saepe eveniet ut et
+        voluptates repudiandae sint et molestiae non recusandae. Itaque earum
+        rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus
+        maiores alias consequatur aut perferendis doloribus asperiores repellat.
       </Text>
       <TextInput
         style={styles.textInput}
@@ -613,7 +671,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.container}>
           <Image
             source={require('./assets/images/ntu-building.webp')}
             style={styles.bannerImg}
@@ -631,7 +689,20 @@ export default function App() {
             nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
             reprehenderit in voluptate velit esse cillum dolore eu fugiat
             nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-            sunt in culpa qui officia deserunt mollit anim id est laborum.
+            sunt in culpa qui officia deserunt mollit anim id est laborum. At
+            vero eos et accusamus et iusto odio dignissimos ducimus qui
+            blanditiis praesentium voluptatum deleniti atque corrupti quos
+            dolores et quas molestias excepturi sint occaecati cupiditate non
+            provident, similique sunt in culpa qui officia deserunt mollitia
+            animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis
+            est et expedita distinctio. Nam libero tempore, cum soluta nobis est
+            eligendi optio cumque nihil impedit quo minus id quod maxime placeat
+            facere possimus, omnis voluptas assumenda est, omnis dolor
+            repellendus. Temporibus autem quibusdam et aut officiis debitis aut
+            rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint
+            et molestiae non recusandae. Itaque earum rerum hic tenetur a
+            sapiente delectus, ut aut reiciendis voluptatibus maiores alias
+            consequatur aut perferendis doloribus asperiores repellat.
           </Text>
           <TextInput
             style={styles.textInput}
@@ -705,7 +776,7 @@ export default function App() {
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           style={{ flex: 1 }}
         >
-          <ScrollView contentContainerStyle={styles.container}>
+          <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.container}>
             <Image
               source={require('./assets/images/ntu-building.webp')}
               style={styles.bannerImg}
@@ -720,11 +791,24 @@ export default function App() {
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
               enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-              in reprehenderit in voluptate velit esse cillum dolore eu
-              fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-              proident, sunt in culpa qui officia deserunt mollit anim id est
-              laborum.
+              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+              reprehenderit in voluptate velit esse cillum dolore eu fugiat
+              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+              sunt in culpa qui officia deserunt mollit anim id est laborum. At
+              vero eos et accusamus et iusto odio dignissimos ducimus qui
+              blanditiis praesentium voluptatum deleniti atque corrupti quos
+              dolores et quas molestias excepturi sint occaecati cupiditate non
+              provident, similique sunt in culpa qui officia deserunt mollitia
+              animi, id est laborum et dolorum fuga. Et harum quidem rerum
+              facilis est et expedita distinctio. Nam libero tempore, cum soluta
+              nobis est eligendi optio cumque nihil impedit quo minus id quod
+              maxime placeat facere possimus, omnis voluptas assumenda est,
+              omnis dolor repellendus. Temporibus autem quibusdam et aut
+              officiis debitis aut rerum necessitatibus saepe eveniet ut et
+              voluptates repudiandae sint et molestiae non recusandae. Itaque
+              earum rerum hic tenetur a sapiente delectus, ut aut reiciendis
+              voluptatibus maiores alias consequatur aut perferendis doloribus
+              asperiores repellat.
             </Text>
             <TextInput
               style={styles.textInput}
