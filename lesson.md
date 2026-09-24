@@ -37,12 +37,12 @@ You will again be prompted to choose an Expo SDK version:
 
 ```
 ? Select an Expo SDK version: › - Use arrow-keys. Return to submit.
-    Latest (SDK 57) - Recommended for most projects
-❯   For learning with Expo Go (SDK 54)
+❯   Latest (SDK 57) - Recommended for most projects
+    For learning with Expo Go (SDK 54)
     Other SDK version…
 ```
 
-Use the arrow keys to select **"For learning with Expo Go (SDK 54)"**, just as you did in Lesson 2.14. This keeps the project compatible with the Expo Go app already installed on your device or emulator.
+Select **"Latest (SDK 57)"** and press Return. Expo Go now only supports SDK 57, so this keeps the project compatible with the Expo Go app installed on your device or emulator.
 
 ```bash
 cd components-app
@@ -855,56 +855,43 @@ Try swapping `"padding"` for `"height"` on iOS and compare the feel; there is no
 
 ---
 
-## Activity: Add a Notes Field
+## Activity: Add a Phone Number Field
 
-You now have a working sign-up form with a name and email input. On your own, add a third field for a short note.
+You now have a working sign-up form with a name and email input. On your own, add a third field for a phone number.
 
-**Task:** Below the existing email `TextInput`, add a multi-line `TextInput` for entering a note, following the same style as the name and email fields (no separate label; use a `placeholder` instead).
+**Task:** Below the existing email `TextInput`, add a controlled `TextInput` for entering a phone number, following the same style as the name and email fields (no separate label; use a `placeholder` instead). When the field is focused, the device should show a numeric keypad rather than the full keyboard.
 
 **Hints:**
-1. The `multiline` prop on `TextInput` enables multi-line entry
-2. Multi-line inputs typically need a larger `height` in the stylesheet (for example, `80`)
-3. On iOS, `textAlignVertical` does not work on `Text`; use it on `TextInput` instead, setting it to `"top"` so text starts from the top of the field rather than the middle
+1. You need a new piece of state, just like `name` and `email`
+2. The `keyboardType` prop controls which keyboard appears; set it to `"phone-pad"`
+3. The `maxLength` prop limits how many characters can be entered (for example, `8` for a Singapore number)
+4. You can reuse the existing `styles.textInput` style; no new style is needed
 
 <details>
 <summary>Reference solution</summary>
+
+Add state:
+
+```jsx
+// App.js
+const [phone, setPhone] = useState('');
+```
 
 In the JSX, after the existing email `TextInput`:
 
 ```jsx
 // App.js
 <TextInput
-  style={styles.notesInput}
-  value={notes}
-  onChangeText={setNotes}
-  placeholder="Enter notes here..."
-  multiline
-  textAlignVertical="top"
-  autoCorrect={false}
+  style={styles.textInput}
+  placeholder="Enter your phone number"
+  value={phone}
+  onChangeText={setPhone}
+  keyboardType="phone-pad"
+  maxLength={8}
 />
 ```
 
-Add state:
-
-```jsx
-// App.js
-const [notes, setNotes] = useState('');
-```
-
-Add the style:
-
-```jsx
-// App.js
-notesInput: {
-  height: 80,
-  width: '70%',
-  borderWidth: 1,
-  borderRadius: 10,
-  borderColor: '#333',
-  padding: 10,
-  margin: 12,
-},
-```
+**Device check:** tapping the phone field opens a numeric keypad, and typing stops after 8 digits.
 
 </details>
 
@@ -914,7 +901,7 @@ notesInput: {
 
 ### Step 1: Add a submit button
 
-React Native ships a basic `Button` component for triggering an action. Add one below your `Notes` input to submit the form:
+React Native ships a basic `Button` component for triggering an action. Add one below your phone number input to submit the form:
 
 ```jsx
 // App.js
@@ -925,11 +912,11 @@ import { StyleSheet, Image, Text, ScrollView, TextInput, Button, KeyboardAvoidin
 // App.js
 <Button
   title="Submit"
-  onPress={() => console.log({ name, email, notes })}
+  onPress={() => console.log({ name, email, phone })}
 />
 ```
 
-**Device check:** a button labelled "Submit" appears below the notes field. Tapping it logs the current form values to the terminal running `npx expo start`.
+**Device check:** a button labelled "Submit" appears below the phone number field. Tapping it logs the current form values to the terminal running `npx expo start`.
 
 > **Common mistake:** Expecting to see the console output on the device screen. `console.log` output appears in the terminal where Metro is running, not on the phone or emulator.
 
@@ -941,7 +928,7 @@ Try adding a `style` prop to your `Button`:
 // App.js
 <Button
   title="Submit"
-  onPress={() => console.log({ name, email, notes })}
+  onPress={() => console.log({ name, email, phone })}
   style={{ backgroundColor: 'darkblue', padding: 20 }}
 />
 ```
@@ -1005,7 +992,7 @@ import Button from './components/Button';
 
 ```jsx
 // App.js
-<Button title="Submit" onPress={() => console.log({ name, email, notes })} />
+<Button title="Submit" onPress={() => console.log({ name, email, phone })} />
 ```
 
 **Device check:** the submit button now has a rounded, filled background, and dims slightly when pressed.

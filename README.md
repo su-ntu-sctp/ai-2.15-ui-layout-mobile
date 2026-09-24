@@ -26,7 +26,7 @@ This lesson builds on the React Native environment set up in Lesson 2.14. Learne
 | 5 min | Break | |
 | 20 min | Lab Part 1: Core components and styling | Code-along: `View`, `Text`, `StyleSheet.create()`, camelCase properties, border differences, extracting a `Header` component; Activity: build a `SubHeader` component |
 | 15 min | Lab Part 2: Image component | Code-along: local image import, network image with explicit dimensions, common mistakes |
-| 35 min | Lab Part 3: TextInput, ScrollView, SafeAreaView, KeyboardAvoidingView | Code-along: sign-up page content, ScrollView overflow fix, controlled TextInputs, notch problem and SafeAreaView fix, keyboard problem and KeyboardAvoidingView, nesting order; Activity: add a Notes field |
+| 35 min | Lab Part 3: TextInput, ScrollView, SafeAreaView, KeyboardAvoidingView | Code-along: sign-up page content, ScrollView overflow fix, controlled TextInputs, notch problem and SafeAreaView fix, keyboard problem and KeyboardAvoidingView, nesting order; Activity: add a phone number field |
 | 5 min | Break | |
 | 20 min | Lab Part 4: Button component | Code-along: submit button, the problem with the built-in `Button`, building a reusable `Button` component |
 | 20 min | Lab Part 5: Flexbox layout | Code-along: `flex` on children, flexDirection, main/cross axis, justifyContent, alignItems, style arrays; optional Activity: build a layout with flex ratios |
